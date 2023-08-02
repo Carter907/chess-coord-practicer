@@ -11,16 +11,19 @@ fn main() {
     println!("GOAL: type the coordinate of the square selected");
     let mut board: [[char; 8]; 8] = [[' '; 8]; 8];
     init_board(&mut board);
-    let mut team = String::new();
     loop {
         let picked_board = pick_square(board.clone(), &mut rng);
-        print_board(picked_board, &mut rng, &mut team);
+        print_board(picked_board);
 
         let mut answer = String::new();
         std::io::stdin()
             .read_line(&mut answer)
             .expect("you failed to read the line");
-        if is_guess_correct(&answer, &picked_board, &team) {
+        answer = answer.trim().to_string();
+        if answer == "exit" {
+            std::process::exit(0);
+        }
+        if is_guess_correct(&answer, &picked_board) {
             let msg = "correct!".blue();
             println!("{msg}");
         } else {
@@ -30,14 +33,12 @@ fn main() {
     }
 }
 
-fn is_guess_correct(guess: &String, board: &[[char; 8]; 8], team: &String) -> bool {
+fn is_guess_correct(guess: &String, board: &[[char; 8]; 8]) -> bool {
     let rank = 8 - guess.chars().nth(1).unwrap().to_digit(10).unwrap() as usize;
     let file = (guess.chars().nth(0).unwrap() as i32 - 97) as usize;
-    println!("file: {} rank {}", file, rank);
     for i in 0..board.len() {
         for j in 0..board[0].len() {
             if board[i][j] == TARGET {
-                println!("{}{}", j, i);
             }
         }
     }
@@ -62,19 +63,12 @@ fn init_board(board: &mut [[char; 8]; 8]) {
     }
 }
 
-fn print_board(board: [[char; 8]; 8], rng: &mut ThreadRng, team: &mut String) {
-    let teams: [&str; 2] =
-        if rng.gen::<f32>() > 0.5 {
-            ["white", "black"]
-        } else { ["black", "white"] };
-    team.clear();
-    team.push_str(teams[1]);
-    println!("{}", teams[0]);
+fn print_board(board: [[char; 8]; 8]) {
+
     for rank in board {
         for square in rank {
             print!("{}", square)
         }
         println!()
     }
-    println!("{}", teams[1])
 }
