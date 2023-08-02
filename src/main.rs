@@ -58,7 +58,7 @@ fn pick_square(mut board: [[char; 8]; 8], rng: &mut ThreadRng) -> [[char; 8]; 8]
 fn init_board(board: &mut [[char; 8]; 8]) {
     for i in 0..board.len() {
         for j in 0..board[i].len() {
-            board[i][j] = if (i as i32 + j as i32) % 2 == 1 { BLACK_SQUARE } else { WHITE_SQUARE }
+            board[i][j] = if (i as i32 + j as i32) % 2 == 1 { WHITE_SQUARE } else { BLACK_SQUARE }
         }
     }
 }
